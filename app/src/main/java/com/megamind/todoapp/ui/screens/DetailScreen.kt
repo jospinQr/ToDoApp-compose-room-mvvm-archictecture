@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.Card
@@ -27,7 +28,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -54,7 +54,7 @@ import com.megamind.todoapp.viewModels.TaskViewModel
 import kotlinx.coroutines.launch
 import java.util.Date
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun DetailScreen(
     id: String,
@@ -68,6 +68,7 @@ fun DetailScreen(
     val coroutineScope = rememberCoroutineScope()
 
     Surface {
+
         Scaffold(
             topBar = {
 
@@ -132,6 +133,9 @@ fun DetailScreen(
                         },
                         onEdit = {
 
+
+
+
                         }
                     )
 
@@ -142,7 +146,6 @@ fun DetailScreen(
         )
     }
 }
-
 
 @Composable
 fun DetailBox(modifier: Modifier = Modifier, task: Task) {
