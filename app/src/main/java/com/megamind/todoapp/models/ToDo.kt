@@ -27,7 +27,7 @@ data class Task(
 @Dao
 interface TaskDao {
 
-    @Query("SELECT * FROM task ORDER BY id")
+    @Query("SELECT * FROM task WHERE done=0 ORDER BY id ")
     fun getAllTask(): LiveData<List<Task>>
 
     @Query("SELECT * FROM task WHERE id= :taskId")

@@ -1,6 +1,12 @@
 package com.megamind.todoapp
 
-import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,17 +15,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.megamind.todoapp.ui.ToDoAppScreen
 import com.megamind.todoapp.ui.theme.ToDoAppTheme
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(
@@ -28,10 +32,14 @@ fun SplashScreen(
 ) {
 
 
-    val scale = remember{ Animatable(3f) }
-    val coroutineScope= rememberCoroutineScope()
+   val animatedState = remember{ MutableTransitionState(false).apply {
+       targetState=true
+   } }
+    val density = LocalDensity.current
+
+
     LaunchedEffect(Unit) {
-        coroutineScope.launch { scale.animateTo(targetValue = 20f) }
+
         delay(3000)
         navController.popBackStack()
         navController.navigate(ToDoAppScreen.todoList.name)
@@ -46,12 +54,20 @@ fun SplashScreen(
     {
 
 
+
+        AnimatedVisibility(
+            visibleState = animatedState,
+            enter = slideInVertically ()+fadeIn(initialAlpha = 0.3f),
+            exit = slideOutVertically() + shrinkVertically() + fadeOut()
+
+        ){
         Text(
             text = "Bienvenu sur ToDoApp",
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = modifier.scale(scale=scale.value)
+            modifier = modifier
 
-        )
+
+        )}
 
     }
 

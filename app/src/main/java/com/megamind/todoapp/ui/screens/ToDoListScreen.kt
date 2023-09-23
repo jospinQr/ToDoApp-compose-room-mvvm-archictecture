@@ -3,10 +3,17 @@ package com.megamind.todoapp
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,6 +63,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -84,33 +92,31 @@ fun ToDoListScreen(
 
 
     var context = LocalContext.current
-    // Get current back stack entry
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    // Get the name of the current screen
+    val backStackEntry by navController.currentBackStackEntryAsState()  // avoir l'actuael back stack entry
     val currentScreen =
-        ToDoAppScreen.valueOf(backStackEntry?.destination?.route ?: ToDoAppScreen.splashScreen.name)
-    //observer la liste des taches
-    val tasks by viewModel.fetchAllTask().observeAsState(arrayListOf())
-    //l'etat de l'alert dialog
-    var isDialogOpen by remember { mutableStateOf(false) }
+        ToDoAppScreen.valueOf(
+            backStackEntry?.destination?.route ?: ToDoAppScreen.splashScreen.name
+        ) // avoir le nom de de
 
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val tasks by viewModel.fetchAllTask().observeAsState(arrayListOf())
+
+    val sheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden) //l'etat de notre modalBottomSheet
     val coroutineScope = rememberCoroutineScope()
 
 
     var taskTitle by remember { mutableStateOf("") }
     var taskDescrption by remember { mutableStateOf("") }
 
-
+    var animatedState by remember { mutableStateOf(true) }
+    val density = LocalDensity.current
 
     ModalBottomSheetLayout(
 
         modifier = modifier.clip(RoundedCornerShape(topEnd = 30.dp, topStart = 30.dp)),
         sheetState = sheetState,
         sheetShape = RoundedCornerShape(topEnd = 18.dp, topStart = 18.dp),
-
         sheetContent = {
-
 
             Column(
                 modifier = modifier
@@ -131,7 +137,7 @@ fun ToDoListScreen(
                 ) {
 
                     OutlinedTextField(
-                        label={Text("Titre")},
+                        label = { Text("Titre") },
                         value = taskTitle,
                         onValueChange = { taskTitle = it },
                         leadingIcon = {
@@ -147,7 +153,7 @@ fun ToDoListScreen(
                     Spacer(modifier = modifier.height(12.dp))
 
                     OutlinedTextField(
-                        label={ Text("Déscription")},
+                        label = { Text("Déscription") },
                         value = taskDescrption,
                         onValueChange = { taskDescrption = it },
                         leadingIcon = {
@@ -195,7 +201,7 @@ fun ToDoListScreen(
                     currentScreen = currentScreen,
                     canNavigate = navController.previousBackStackEntry != null,
                     navogateUp = { /*TODO*/ },
-                    onSttings = { /*TODO*/ },
+                    onSttings = { animatedState=!animatedState },
                     OnAppropos = { /*TODO*/ }
                 )
             },
@@ -234,17 +240,35 @@ fun ToDoListScreen(
                             Text("Liste vide")
                         }
                     } else {
-                        LazyColumn(modifier.padding(4.dp)) {
-                            items(items = tasks) { task ->
-                                TaskItem(
-                                    id = task.id,
-                                    title = task.title,
-                                    date = task.date!!,
-                                    description = task.description,
-                                    onclick = {
-                                        onItemClicked(task.id.toString())
-                                    }
-                                )
+
+                        AnimatedVisibility(
+                            visible = animatedState,
+                            enter = slideInVertically {
+                                // Slide in from 40 dp from the top.
+                                with(density) { -40.dp.roundToPx() }
+                            } + expandVertically(
+                                // Expand from the top.
+                                expandFrom = Alignment.Top
+                            ) + fadeIn(
+                                // Fade in with the initial alpha of 0.3f.
+                                initialAlpha = 0.3f
+                            ),
+                            exit = slideOutVertically() + shrinkVertically() + fadeOut()
+
+                        ) {
+
+                            LazyColumn(modifier.padding(4.dp)) {
+                                items(items = tasks) { task ->
+                                    TaskItem(
+                                        id = task.id,
+                                        title = task.title,
+                                        date = task.date!!,
+                                        description = task.description,
+                                        onclick = {
+                                            onItemClicked(task.id.toString())
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
