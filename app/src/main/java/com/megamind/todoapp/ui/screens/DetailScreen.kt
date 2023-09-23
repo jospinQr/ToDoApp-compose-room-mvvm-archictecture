@@ -27,7 +27,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SnackbarResult.ActionPerformed
+import androidx.compose.material3.SnackbarResult.Dismissed
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -64,6 +65,7 @@ fun DetailScreen(
 ) {
 
     val task by viewModel.fetchTaskById(id.toInt()).observeAsState()
+
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
@@ -94,7 +96,7 @@ fun DetailScreen(
 
                 Column(
                     modifier = modifier
-                        .padding(16.dp)
+                        .padding(66.dp)
                         .fillMaxSize()
                 ) {
 
@@ -116,10 +118,10 @@ fun DetailScreen(
                                 )
 
                                 when (deletePremission) {
-                                    SnackbarResult.Dismissed -> {
+                                    Dismissed -> {
                                     }
 
-                                    SnackbarResult.ActionPerformed -> {
+                                    ActionPerformed -> {
                                         task?.let { viewModel.deleteTask(it) }
                                         navController.popBackStack()
                                     }
@@ -133,7 +135,21 @@ fun DetailScreen(
                         },
                         onEdit = {
 
+                            coroutineScope.launch {
+                                val editPermission = snackbarHostState.showSnackbar(
 
+                                    message = "voulez-vous modifier?",
+                                    actionLabel = "oui",
+                                    duration = SnackbarDuration.Long
+                                )
+                                when (editPermission) {
+                                    Dismissed -> {}
+                                    ActionPerformed -> {
+
+                                        task?.let { it1 -> viewModel.editTaskDone(true, it1.id) }
+                                    }
+                                }
+                            }
 
 
                         }
@@ -180,7 +196,11 @@ fun DetailBox(modifier: Modifier = Modifier, task: Task) {
                         .size(40.dp)
                 )
 
-                Text(text = task.date.toString(), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = task.date.toString(),
+                    style = MaterialTheme.typography.titleMedium,
+
+                )
             }
 
             Spacer(modifier = modifier.height(12.dp))

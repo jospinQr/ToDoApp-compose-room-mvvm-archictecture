@@ -20,7 +20,7 @@ data class Task(
     val title: String,
     val date: Date?,
     val description: String,
-    val done: Boolean?
+    val done: Boolean = false
 )
 
 
@@ -42,6 +42,10 @@ interface TaskDao {
     @Update
     suspend fun UdateTask(task: Task)
 
+    //uptade only done field
+    @Query("UPDATE task set done=:done  WHERE id=:id")
+    suspend fun upDateDoneField(done: Boolean, id: Int)
+
 }
 
 
@@ -56,21 +60,23 @@ class TaskRepository(application: Application) {
     }
 
 
-
-
     val allTask: LiveData<List<Task>> = taskDao.getAllTask()
 
 
-    fun taskById(taskId: Int):LiveData<Task> = taskDao.getTaskById(taskId)
+    fun taskById(taskId: Int): LiveData<Task> = taskDao.getTaskById(taskId)
 
     @Suppress("RedundantSuspendModifier")
     suspend fun insertTask(task: Task) {
         taskDao.insertTask(task)
     }
 
-    suspend fun deleteTask(task: Task){
+    suspend fun deleteTask(task: Task) {
 
         taskDao.deleteTask(task)
+    }
+
+    suspend fun editTask(done: Boolean, id: Int) {
+        taskDao.upDateDoneField(done, id)
     }
 
 }

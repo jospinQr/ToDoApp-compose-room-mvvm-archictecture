@@ -1,13 +1,9 @@
 package com.megamind.todoapp
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -32,10 +28,7 @@ fun SplashScreen(
 ) {
 
 
-   val animatedState = remember{ MutableTransitionState(false).apply {
-       targetState=true
-   } }
-    val density = LocalDensity.current
+
 
 
     LaunchedEffect(Unit) {
@@ -53,21 +46,19 @@ fun SplashScreen(
     )
     {
 
+        val rotation = remember { Animatable(0f) }
+        LaunchedEffect(rotation) {
+            rotation.animateTo(360f, animationSpec = tween(durationMillis = 1000))
+        }
+        Box (modifier=modifier.rotate(rotation.value)){
+            Text(
+                text = "Bienvenu sur ToDoApp",
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = modifier
 
 
-        AnimatedVisibility(
-            visibleState = animatedState,
-            enter = slideInVertically ()+fadeIn(initialAlpha = 0.3f),
-            exit = slideOutVertically() + shrinkVertically() + fadeOut()
-
-        ){
-        Text(
-            text = "Bienvenu sur ToDoApp",
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = modifier
-
-
-        )}
+            )
+        }
 
     }
 
