@@ -68,6 +68,7 @@ class TaskRepository(application: Application) {
     @Suppress("RedundantSuspendModifier")
     suspend fun insertTask(task: Task) {
         taskDao.insertTask(task)
+
     }
 
     suspend fun deleteTask(task: Task) {

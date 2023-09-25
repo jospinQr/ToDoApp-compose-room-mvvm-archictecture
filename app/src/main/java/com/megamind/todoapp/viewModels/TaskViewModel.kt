@@ -22,13 +22,18 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         return repository.taskById(taskId)
     }
 
-    fun insertTask(task: Task) = viewModelScope.launch { repository.insertTask(task) }
+    fun insertTask(task: Task) = viewModelScope.launch {
+        repository.insertTask(task)
+    }
 
     fun deleteTask(task: Task) = viewModelScope.launch { repository.deleteTask(task = task) }
 
 
     fun editTaskDone(done: Boolean, id: Int) =
         viewModelScope.launch { repository.editTask(done, id) }
+
+
+
 
 
 }

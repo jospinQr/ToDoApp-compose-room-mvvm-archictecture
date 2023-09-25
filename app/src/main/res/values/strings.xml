@@ -8,6 +8,12 @@
     <string name="confimer">Confirmer</string>
     <string name="cancle">Annuler</string>
     <string name="save">Enregitrer</string>
+    <string name="userName">Nom de l\'utilisateur</string>
+    <string name="singIn">Inscription\n</string>
+    <string name="login">Connexion\n</string>
+    <string name="firstName">Prénom</string>
+    <string name="lastName">Nom</string>
+    <string name="passWord">Mot de passe</string>
 
 
 </resources>

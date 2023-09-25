@@ -189,7 +189,7 @@ fun DetailBox(modifier: Modifier = Modifier, task: Task) {
             ) {
 
                 Image(
-                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                    painter = painterResource(R.drawable.routine),
                     contentDescription = "taskImage",
                     modifier = modifier
                         .clip(CircleShape)

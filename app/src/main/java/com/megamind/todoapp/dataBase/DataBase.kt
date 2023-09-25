@@ -9,17 +9,20 @@ import com.megamind.todoapp.DateConverter
 
 import com.megamind.todoapp.models.Task
 import com.megamind.todoapp.models.TaskDao
+import com.megamind.todoapp.models.User
+import com.megamind.todoapp.models.UserDao
 
 
-@Database(entities = [Task::class], version = 1, exportSchema = false)
+@Database(entities = [Task::class, User::class], version = 2, exportSchema = false)
 @TypeConverters(DateConverter::class)
 
 abstract class AppDataBase() : RoomDatabase() {
 
+    abstract fun userDao(): UserDao
+
     abstract fun taskDao(): TaskDao
 
     companion object {
-
 
 
         // Singleton prevents multiple instances of database opening at the

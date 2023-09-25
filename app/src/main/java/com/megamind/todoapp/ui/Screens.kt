@@ -8,7 +8,9 @@ enum class ToDoAppScreen(@StringRes val title: Int) {
     todoList(title = R.string.todoList),
     settingsScreen(title = R.string.settings),
     aboutScreen(title = R.string.about),
-    detailScreen(title= R.string.detail)
+    detailScreen(title= R.string.detail),
+    loginScreen(title = R.string.login),
+    signInScreen(title = R.string.singIn)
 }
 
 
